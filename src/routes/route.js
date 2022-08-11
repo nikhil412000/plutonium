@@ -46,21 +46,10 @@ router.post('/players', function (req, res) {
         }
     }
     if (flag === 0) {
-        players.push(addPlayer)
+        players.unshift(addPlayer)
     }
     res.send({ data: players, status: true })
 })
-
-
-// router.post('/test-post',function(req , res){
-//     let arr = [12, "functionup"]
-//     let ele = req.body.element
-//     arr.push(ele)
-
-//     res.send({ msg: arr, status : true})
-// })
-
-
 
 
 module.exports = router;
