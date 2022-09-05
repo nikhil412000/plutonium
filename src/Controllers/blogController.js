@@ -8,7 +8,7 @@ const createBlogs = async function (req, res) {
         let checkId = await autherModel.findById(authId)
         if (checkId) {
             let createdBlogs = await blogModel.create(blogs)
-            res.status(201).send({ data: createdBlogs })
+            res.status(201).send({ status: true,data: createdBlogs })
         } else {
             res.status(401).send({ status: true, msg: " Auther is not valid" })
         }
@@ -34,13 +34,7 @@ const getBologs = async function (req, res) {
         } else {
             res.status(401).send({ status: true, msg: " Auther is not valid" })
         }
-        let getBolog = await blogModel.find({ authorId: authId, isDeleted: false, isPublished: true })
-        if (getBolog) {
-            res.status(200).send({ status: true, data: getBolog })
-        } else {
-            res.status(404).send({ status: false, msg: "Data Not Found" })
-        }
-
+    
     } catch (error) {
         res.status(500).send({ msg: "Error", error: error.message })
     }
