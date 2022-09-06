@@ -39,6 +39,67 @@ const getBologs = async function (req, res) {
         res.status(500).send({ msg: "Error", error: error.message })
     }
 }
+const updateBlogs = async function (req, res) {
+    try {
+        let data = req.body
+        if (!data) res.status(400).send({ status: false, msg: "Data is Missing" })
+        let blogId = req.params.blogId
+        if (blogId) {
+            let check1 = await blogModel.findOne({ _id: blogId, isDeleted: false })
+            if (check1) {
+                let update = await blogModel.findByIdAndUpdate(blogId, data, { new: true })
+                let update1 = await blogModel.findByIdAndUpdate(blogId, { $set: { publishedAt: new Date, isPublished: true } }, { new: true })
+                res.status(200).send({ status: true, data: update1 })
+            } else {
+                res.status(404).send({ status: false, msg: "Data Not found" })
+            }
+        } else {
+            res.status(400).send({ status: false, msg: "Data is Missing" })
+        }
+    } catch (error) {
+        res.status(500).send({ msg: "Error", error: error.message })
+    }
+    // {{publishedAt:{$set:{date }    }   }    }
+}
 
+const deleteblog = async function (req, res) {
+    try {
+        let blogId = req.params.blogId
+        if (blogId) {
+            let check1 = await blogModel.findOne({ _id: blogId, isDeleted: false })
+            if (check1) {
+                let deletedblog = await blogModel.findByIdAndUpdate(blogId, { $set: { isDeleted: true, deletedAt: new Date } })
+                res.status(200).send()
+            } else {
+                res.status(404).send({ status: false, msg: "Data Not found" })
+            }
+        } else {
+            res.status(400).send({ status: false, msg: "Data is Missing" })
+        }
+    } catch (error) {
+        res.status(500).send({ msg: "Error", error: error.message })
+    }
+}
+
+const deletebolgbyquery = async function (req, res) {
+    try {
+        let AutherId = req.query.AutherId
+        if (!AutherId) res.status(400).send({ status: false, msg: "Data is Missing" })
+        let check1 = await autherModel.findById(AutherId)
+        if (check1) {
+            let deleteblog = await blogModel.deleteMany({ authorId: AutherId })
+            res.status(200).send()
+        } else {
+            res.status(404).send({ status: false, msg: "Data Not found" })
+        }
+    } catch (error) {
+        res.status(500).send({ msg: "Error", error: error.message })
+    }
+   
+
+}
 module.exports.createBlogs = createBlogs
 module.exports.getBologs = getBologs
+module.exports.updateBlogs = updateBlogs
+module.exports.deleteblog = deleteblog
+module.exports.deletebolgbyquery = deletebolgbyquery
