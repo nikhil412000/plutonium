@@ -2,17 +2,20 @@ const express = require('express');
 const router = express.Router();
 const blogcontroller = require("../Controllers/blogController")
 const autherController = require("../Controllers/autherController")
+const{tokenverify,auth} =require("../middleweres/auth")
 
 router.post("/authors",autherController.createAuthor)
 
-router.post("/blogs",blogcontroller.createBlogs)
+router.post("/blogs",tokenverify,blogcontroller.createBlogs)
 
-router.get("/blogs",blogcontroller.getBologs)
+router.get("/blogs",tokenverify,blogcontroller.getBologs)
 
-router.put("/blogs/:blogId",blogcontroller.updateBlogs)
+router.put("/blogs/:blogId",tokenverify, auth, blogcontroller.updateBlogs)
 
-router.delete("/blogs/:blogId",blogcontroller.deleteblog)
+router.delete("/blogs/:blogId",tokenverify, auth, blogcontroller.deleteblog)
 
-router.delete("/blogs", blogcontroller.deletebolgbyquery)
+router.delete("/blogs", tokenverify, auth, blogcontroller.deletebolgbyquery)
+
+router.post("/login",tokenverify, autherController.loginAuther)
 
 module.exports = router;
